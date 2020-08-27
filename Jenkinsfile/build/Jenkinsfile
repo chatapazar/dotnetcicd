@@ -45,21 +45,60 @@ node('dotnet-31') {
 //      }
 //	}
 //  }
-  stage('Create Service') {
-    if(openshift.withCluster() {
+//  stage('Create Service') {
+//    if(openshift.withCluster() {
+//          openshift.withProject(env.DEV_PROJECT) {
+//            return !openshift.selector("svc", "${imageName}").exists()
+//          }
+//        }){
+//      openshift.withCluster() {
+//        openshift.withProject(env.DEV_PROJECT) {
+//         def template = './bin/backend-svc-dev.yaml'
+//          openshift.apply(
+//            openshift.process("-f", template)
+//          )
+//        }
+//      }	
+//	}
+//  }
+//    stage('Create Route') {
+//      if(openshift.withCluster() {
+//            openshift.withProject(env.DEV_PROJECT) {
+//              return !openshift.selector("route", "${imageName}").exists()
+//            }
+//          }){
+//        openshift.withCluster() {
+//          openshift.withProject(env.DEV_PROJECT) {
+//            def template = './bin/backend-route-dev.yaml'
+//           openshift.apply(
+//              openshift.process("-f", template)
+//            )
+//          }
+//        }	  
+//	  }
+//    }
+//    stage('Build Container Image') {
+//      echo "Build Container Image ${imageName}"
+//	  dir('app') {
+//        sh 'oc -n ${env.CICD_PROJECT} start-build ${imageName} --from-dir=bin/Release/netcoreapp3.1/publish --follow'
+//		sh 'oc tag ${imageName}:latest ${imageName}:${devTag}'
+//      }
+//    } 
+    stage('Create Deployment Config') {
+      steps {
+        echo "Create deployment config: env.DEV_PROJECT"
+        openshift.withCluster() {
           openshift.withProject(env.DEV_PROJECT) {
-            return !openshift.selector("svc", "${imageName}").exists()
+            def template = './bin/backend-dc-dev.yaml'
+            openshift.apply(
+              openshift.process(
+                "-f", template,
+                "-p", "IMAGE_TAG=${devTag}",
+                "-p", "APP_VERSION=${version}"
+              )
+            )
           }
-        }){
-      openshift.withCluster() {
-        openshift.withProject(env.DEV_PROJECT) {
-          def template = './bin/backend-svc-dev.yaml'
-          openshift.apply(
-            openshift.process("-f", template)
-          )
         }
-      }	
-	}
-  }
-  
+      }
+    } 
 }
