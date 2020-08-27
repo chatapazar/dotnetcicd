@@ -37,7 +37,7 @@ pipeline {
           script {
             def props = readProperties  file:'build.properties'
             version = props['version']
-			devTag = "${version}-" + currentBuild.number
+			      devTag = "${version}-" + currentBuild.number
             echo "Image Name: ${imageName}"
             echo "version: ${version}"
             echo "devTag: ${devTag}"
