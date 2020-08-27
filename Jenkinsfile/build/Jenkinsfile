@@ -36,7 +36,7 @@ node('dotnet-31') {
   stage('Create Build Config') {
     script{
 	  if(openshift.withCluster() {
-        openshift.withProject(${CICD_PROJECT}) {
+        openshift.withProject("${CICD_PROJECT}") {
           return !openshift.selector("bc", "${imageName}").exists()
         }
       }){
