@@ -64,8 +64,6 @@ objects:
               cpu: "0.1"
               memory: 150Mi
           env:
-            - name: app.backend
-              value: ${BACKEND_URL}
             - name: app.version
               value: ${APP_VERSION}
             - name: app.message
@@ -88,11 +86,6 @@ parameters:
   name: IMAGE_TAG
   required: true
   value: ${IMAGE_TAG}
-- displayName: BACKEND_URL
-  description: Backend target URL
-  name: BACKEND_URL
-  required: true
-  value: ${BACKEND_URL}
 - displayName: MESSAGE
   description: Meesage return from app
   name: MESSAGE
