@@ -59,6 +59,8 @@ pipeline {
 	    dir('app') {
 		  script{
 		    sh "whoami"
+			sh "node --version"
+			sh "npm --version"
 			sh "dotnet --version"
 	      }
 	    }
