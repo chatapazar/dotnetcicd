@@ -53,10 +53,12 @@ pipeline {
       }
     }
 	stage('test') {
-	  steps {
-	    dir('app') {
-		  sh "dotnet --version"
-	    }
+	  node("dotnet-31-jenkins-agent-rhel7"){
+		  steps {
+			dir('app') {
+			  sh "whoami"
+			}
+		  }	  
 	  }
 	}
   }
