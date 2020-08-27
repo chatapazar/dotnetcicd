@@ -52,14 +52,12 @@ pipeline {
         }
       }
     }
-	stage('test') {
-	  node("dotnet-31-jenkins-agent-rhel7"){
-		  steps {
-			dir('app') {
-			  sh "whoami"
-			}
-		  }	  
-	  }
-	}
+	stage('Example Test') {
+            agent { label 'dotnet-31-jenkins-agent-rhel7' } 
+            steps {
+                echo 'Hello, JDK'
+                sh 'whoami'
+            }
+    }
   }
 }
