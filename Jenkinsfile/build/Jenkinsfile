@@ -35,8 +35,9 @@ pipeline {
         checkout scm
         dir('app') {
           script {
-            version = readFile(file: 'version.txt')
-            devTag = "${version}-" + currentBuild.number
+            def props = readProperties  file:'build.properties'
+            version = props['version']
+			devTag = "${version}-" + currentBuild.number
             echo "Image Name: ${imageName}"
             echo "version: ${version}"
             echo "devTag: ${devTag}"
