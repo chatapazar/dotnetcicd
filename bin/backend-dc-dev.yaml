@@ -17,10 +17,10 @@ objects:
       name: backend
       app.kubernetes.io/component: backend
       app.kubernetes.io/instance: backend
-      app.kubernetes.io/name: java
+      app.kubernetes.io/name: dotnet
       app.kubernetes.io/part-of: group-1
-      app.openshift.io/runtime: java
-      app.openshift.io/runtime-version: '8'
+      app.openshift.io/runtime: dotnet
+      app.openshift.io/runtime-version: '3.1'
   spec:
     replicas: 1
     revisionHistoryLimit: 5
