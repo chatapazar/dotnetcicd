@@ -49,14 +49,18 @@ pipeline {
       }
     }
 	stage('restore') {
-	  dir('app') {
-		sh "dotnet restore app.csproj --configfile nuget.config --force --verbosity d"
+	  steps {
+	    dir('app') {
+		    sh "dotnet restore app.csproj --configfile nuget.config --force --verbosity d"
+	    }
 	  }
 	}
     stage('publish') {
-      dir('app') {
-        sh "dotnet publish app.csproj --no-restore -c Release"
-      }
+      steps {
+		    dir('app') {
+		      sh "dotnet publish app.csproj --no-restore -c Release"
+		    }
+	    }
     }
 	
     // Create Build Config
