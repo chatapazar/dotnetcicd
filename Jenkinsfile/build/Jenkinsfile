@@ -1,10 +1,9 @@
-environment {
- version = ""
- imageName = "backend"
- devTag = "0.0-0"
- CICD_PROJECT = "ci-cd"
- DEV_PROJECT = "dev"
-}
+version = ""
+imageName = "backend"
+devTag = "0.0-0"
+CICD_PROJECT = "ci-cd"
+DEV_PROJECT = "dev"
+
 node('dotnet-31') {
 
   stage('Checkout Source') {
