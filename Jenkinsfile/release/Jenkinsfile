@@ -20,15 +20,44 @@ pipeline {
     imageName="backend"
   }
   stages {  
-    stage('Test') {
+    stage('Choose UAT Version') {
       steps {
         script {
-		  echo "tag: ${tag}"
           openshift.withCluster() {
-            openshift.withProject(env.UAT_PROJECT) {
-              echo "chatchai hello world"
+            namespace = openshift.project()
+            def tags = openshift.selector("istag")
+              .objects()
+              .collect {
+                it.metadata.name
+              }
+              .findAll {
+                it ==~ /^backend:([0-9]+)\.([0-9]+)\.([0-9]+)\-([0-9]+)$/
+                //it.startsWith 'backend:([0-9]+)\.([0-9]+)\.([0-9]+)\-([0-9]+)'
+              }
+              .collect {
+                it.replaceAll(/backend:(.*)/, "\$1")
+              }
+              .sort()
+            timeout(5) {
+              selectTag = input(
+                ok: "Deploy UAT",
+                message: "Enter release version to promote to UAT",
+                parameters: [
+                  choice(
+                    choices: tags.join('\n'),
+                    description: '',
+                    name: 'Release Version'
+                  )
+                ]
+              )
             }
           }
+          println "selectTag = ${selectTag}"
+          version = selectTag.split('-')[0]
+          println "version = ${version}"
+          println "tag = ${tag}"
+          releaseTag = version + "-" + tag
+          println "releaseTag = ${releaseTag}"
         }
       }
     }
