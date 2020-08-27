@@ -85,19 +85,17 @@ node('dotnet-31') {
 //      }
 //    } 
     stage('Create Deployment Config') {
-      steps {
-        echo "Create deployment config: env.DEV_PROJECT"
-        openshift.withCluster() {
-          openshift.withProject(env.DEV_PROJECT) {
-            def template = './bin/backend-dc-dev.yaml'
-            openshift.apply(
-              openshift.process(
-                "-f", template,
-                "-p", "IMAGE_TAG=${devTag}",
-                "-p", "APP_VERSION=${version}"
-              )
+      echo "Create deployment config: env.DEV_PROJECT"
+      openshift.withCluster() {
+        openshift.withProject(env.DEV_PROJECT) {
+          def template = './bin/backend-dc-dev.yaml'
+          openshift.apply(
+            openshift.process(
+              "-f", template,
+              "-p", "IMAGE_TAG=${devTag}",
+              "-p", "APP_VERSION=${version}"
             )
-          }
+          )
         }
       }
     } 
