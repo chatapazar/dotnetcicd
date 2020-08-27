@@ -1,27 +1,33 @@
 import java.text.SimpleDateFormat
+def selectTag
+def releaseTag
+def tag
+def UAT_PROJECT = "uat"
 
-version = ""
-imageName = "backend"
-devTag = "0.0-0"
-CICD_PROJECT = "ci-cd"
-DEV_PROJECT = "dev"
-UAT_PROJECT = "uat"
-selectTag = ""
-releaseTag = ""
-tag = ""
-
-node('dotnet-31') {
-
-  stage('Prepare Variable') {
-	script {
-      def dateFormat = new SimpleDateFormat("yyyyMMdd")
-      def date = new Date()
-      def releaseDate = (dateFormat.format(date))
-      tag = releaseDate + "-" + currentBuild.number
-	  echo "tag: ${tag}"
-	}
-  }
+node {
+  def dateFormat = new SimpleDateFormat("yyyyMMdd")
+  def date = new Date()
+  def releaseDate = (dateFormat.format(date))
+  tag = releaseDate + "-" + env.BUILD_NUMBER
   
-
- 
+}
+pipeline {
+  options {
+    timeout(time: 30, unit: 'MINUTES')
+  }
+  environment {
+    imageName="backend"
+  }
+    stage('Test') {
+      steps {
+        script {
+		  echo "tag: ${tag}"
+          openshift.withCluster() {
+            openshift.withProject(env.UAT_PROJECT) {
+              echo "chatchai hello world"
+            }
+          }
+        }
+      }
+    }
 }
