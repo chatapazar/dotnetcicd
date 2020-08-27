@@ -37,10 +37,6 @@ pipeline {
     // Checkout Source Code.
     stage('Checkout Source') {
       steps {
-		script{
-		  sh "git clone https://github.com/chatapazar/dotnetcicd ."
-        }
-        
 		dir('app') {
           script {
             def props = readProperties  file:'build.properties'
@@ -56,17 +52,6 @@ pipeline {
         }
       }
     }
-	stage('restore') {
-	  steps {
-	    dir('app') {
-		  script{
-		    sh "whoami"
-			sh "node --version"
-			sh "npm --version"
-			sh "dotnet --version"
-	      }
-	    }
-	  }
-	}
+
   }
 }
