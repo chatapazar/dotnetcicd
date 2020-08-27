@@ -34,30 +34,14 @@ pipeline {
   }
   
   stages {
-    // Checkout Source Code.
-    stage('Checkout Source') {
+    stage('test') {
       steps {
 		dir('app') {
           script {
-            def props = readProperties  file:'build.properties'
-            version = props['version']
-			devTag = "${version}-" + currentBuild.number
-            echo "Image Name: ${imageName}"
-            echo "version: ${version}"
-            echo "devTag: ${devTag}"
-            echo "Backend URL: ${env.BACKEND_URL}"
-            echo "CICD Project: ${env.CICD_PROJECT}"
-            echo "Development Project: ${env.DEV_PROJECT}"
+            sh 'whoami'
           }
         }
       }
-    }
-	stage('Example Test') {
-            agent { label 'dotnet-31-jenkins-agent-rhel7' } 
-            steps {
-                echo 'Hello, JDK'
-                sh 'whoami'
-            }
     }
   }
 }
