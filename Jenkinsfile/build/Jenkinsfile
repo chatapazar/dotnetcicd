@@ -23,32 +23,27 @@ node('dotnet-31') {
 	  }
 	}
   }
-  stage('Restore') {
-    dir('app') {
-	  sh "dotnet restore app.csproj --configfile nuget.config --force --verbosity d"
-	}
-  }
-  stage('Publish') {
-	dir('app') {
-	  sh "dotnet publish app.csproj --no-restore -c Release"
-	}
-  }
+//  stage('Restore') {
+//    dir('app') {
+//	  sh "dotnet restore app.csproj --configfile nuget.config --force --verbosity d"
+//	}
+//  }
+//  stage('Publish') {
+//	dir('app') {
+//	  sh "dotnet publish app.csproj --no-restore -c Release"
+//	}
+//  }
   stage('Create Build Config') {
-    when {
-      expression {
-        openshift.withCluster() {
+    if(openshift.withCluster() {
           openshift.withProject(env.CICD_PROJECT) {
             return !openshift.selector("bc", "${imageName}").exists()
           }
-        }
-      }
-    }
-    steps {
-      echo "Create build config ${imageName}:latest"
+        }){
+	  echo "Create build config ${imageName}:latest"
       dir('app') {
         sh 'dotnet --version'
       }
-     }
+	}
   }
 
   
