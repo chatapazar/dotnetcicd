@@ -1,15 +1,27 @@
+environment {
+ version = ""
+ imageName = "backend"
+ devTag = "0.0-0"
+ CICD_PROJECT = "ci-cd"
+ DEV_PROJECT = "dev"
+}
 node('dotnet-31') {
 
-  stage('Clone') {
+  stage('Checkout Source') {
     checkout scm
   }
 
   stage('Test') {
 	dir('app') {
 	  script {
-		def props = readProperties file:'build.properties'
+		def props = readProperties  file:'build.properties'
 		version = props['version']
+		devTag = "${version}-" + currentBuild.number
+		echo "Image Name: ${imageName}"
 		echo "version: ${version}"
+		echo "devTag: ${devTag}"
+		echo "CICD Project: ${CICD_PROJECT}"
+		echo "Development Project: ${DEV_PROJECT}"
 	  }
 	}
   }
