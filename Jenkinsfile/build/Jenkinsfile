@@ -33,18 +33,20 @@ node('dotnet-31') {
 //	  sh "dotnet publish app.csproj --no-restore -c Release"
 //	}
 //  }
-//  stage('Create Build Config') {
-//    if(openshift.withCluster() {
-//          openshift.withProject(${CICD_PROJECT}) {
-//            return !openshift.selector("bc", "${imageName}").exists()
-//          }
-//        }){
-//      echo "Create build config ${imageName}:latest"
-//	  dir('app') {
-//        sh 'oc -n ${CICD_PROJECT} new-build --name=${imageName} dotnet:3.1 --binary=true || true'
-//      }
-//	}
-//  }
+  stage('Create Build Config') {
+    script{
+	  if(openshift.withCluster() {
+        openshift.withProject(${CICD_PROJECT}) {
+          return !openshift.selector("bc", "${imageName}").exists()
+        }
+      }){
+        echo "Create build config ${imageName}:latest"
+	    dir('app') {
+          sh 'oc -n ${CICD_PROJECT} new-build --name=${imageName} dotnet:3.1 --binary=true || true'
+        }
+	  }	
+	}
+  }
 //  stage('Create Service') {
 //    if(openshift.withCluster() {
 //          openshift.withProject(${DEV_PROJECT}) {
@@ -84,19 +86,19 @@ node('dotnet-31') {
 //		sh 'oc tag ${imageName}:latest ${imageName}:${devTag}'
 //      }
 //    } 
-    stage('Create Deployment Config') {
-      echo "Create deployment config: ${DEV_PROJECT}"
-      openshift.withCluster() {
-        openshift.withProject(${DEV_PROJECT}) {
-          def template = './bin/backend-dc-dev.yaml'
-          openshift.apply(
-            openshift.process(
-              "-f", template,
-              "-p", "IMAGE_TAG=${devTag}",
-              "-p", "APP_VERSION=${version}"
-            )
-          )
-        }
-      }
-    } 
+//    stage('Create Deployment Config') {
+//      echo "Create deployment config: ${DEV_PROJECT}"
+//      openshift.withCluster() {
+//        openshift.withProject(${DEV_PROJECT}) {
+//          def template = './bin/backend-dc-dev.yaml'
+//          openshift.apply(
+//            openshift.process(
+//              "-f", template,
+//             "-p", "IMAGE_TAG=${devTag}",
+//              "-p", "APP_VERSION=${version}"
+//            )
+//          )
+//        }
+//     }
+//    } 
 }
