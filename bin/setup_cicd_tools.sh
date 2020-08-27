@@ -14,7 +14,7 @@ function check_pod(){
     while [ $READY = "NO" ];
     do
         clear
-        #echo "Wait for $1 pod to sucessfully start"
+        echo "Wait for $1 pod to sucessfully start"
         MESSAGE=$(oc get pods  -n ${CICD_PROJECT}| grep $1 | grep -v deploy)
         STATUS=$(echo ${MESSAGE}| awk '{print $2}')
         if [ $(echo -n ${MESSAGE} | wc -c) -gt 0 ];
@@ -65,7 +65,7 @@ check_pod "jenkins"
 #--param POSTGRESQL_DATABASE=sonar \
 #--param VOLUME_CAPACITY=${SONAR_PVC_SIZE} \
 #--labels=app=sonarqube_db
-check_pod "postgresql"
+#check_pod "postgresql"
 #oc new-app --docker-image=quay.io/gpte-devops-automation/sonarqube:7.9.1 --env=SONARQUBE_JDBC_USERNAME=sonar --env=SONARQUBE_JDBC_PASSWORD=sonar --env=SONARQUBE_JDBC_URL=jdbc:postgresql://postgresql/sonar --labels=app=sonarqube
 #oc rollout pause dc sonarqube
 #oc label dc sonarqube app.kubernetes.io/part-of=Code-Quality -n ${CICD_PROJECT}
