@@ -39,6 +39,7 @@ pipeline {
 		dir('app') {
           script {
             sh 'oc version'
+			sh 'dotnet --version'
           }
         }
       }
