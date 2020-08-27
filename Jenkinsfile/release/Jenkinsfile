@@ -18,6 +18,7 @@ pipeline {
   environment {
     imageName="backend"
   }
+  stages {  
     stage('Test') {
       steps {
         script {
@@ -30,4 +31,5 @@ pipeline {
         }
       }
     }
+  }
 }
