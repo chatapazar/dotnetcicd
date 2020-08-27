@@ -38,7 +38,7 @@ pipeline {
       steps {
 		dir('app') {
           script {
-            sh 'whoami'
+            sh 'oc version'
           }
         }
       }
