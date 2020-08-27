@@ -24,17 +24,13 @@ node('dotnet-31') {
 	}
   }
   stage('Restore') {
-    steps {
-	  dir('app') {
-	    sh "dotnet restore app.csproj --configfile nuget.config --force --verbosity d"
-	  }
-    }
+    dir('app') {
+	  sh "dotnet restore app.csproj --configfile nuget.config --force --verbosity d"
+	}
   }
   stage('Publish') {
-	steps {
-	  dir('app') {
-		sh "dotnet publish app.csproj --no-restore -c Release"
-	  }
+	dir('app') {
+	  sh "dotnet publish app.csproj --no-restore -c Release"
 	}
   }
 
