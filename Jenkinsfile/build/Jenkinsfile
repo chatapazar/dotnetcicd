@@ -17,7 +17,6 @@ pipeline {
         resourceLimitCpu "2"
 		ttyEnabled "false"
 		privileged "false"
-		args "${computer.jnlpmac} ${computer.name}"
       }
     }
   }
