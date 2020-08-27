@@ -37,9 +37,11 @@ pipeline {
     // Checkout Source Code.
     stage('Checkout Source') {
       steps {
-
-        checkout scm
-        dir('app') {
+		script{
+		  sh "git clone https://github.com/chatapazar/dotnetcicd.git ."
+        }
+        
+		dir('app') {
           script {
             def props = readProperties  file:'build.properties'
             version = props['version']
