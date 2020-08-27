@@ -57,7 +57,10 @@ pipeline {
 	stage('restore') {
 	  steps {
 	    dir('app') {
-		  sh "dotnet --version"
+		  script{
+		    sh "whoami"
+			sh "dotnet --version"
+	      }
 	    }
 	  }
 	}
