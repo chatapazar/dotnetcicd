@@ -1,0 +1,24 @@
+kind: BuildConfig
+apiVersion: v1
+metadata:
+  name: backend-build-pipeline
+spec:
+  strategy:
+    type: JenkinsPipeline
+    jenkinsPipelineStrategy:
+      jenkinsfile: |-
+        node("dotnet-31") {
+          stage('clone sources') {
+            sh "git clone https://github.com/chatapazar/dotnetcicd ."
+          }
+          stage('restore') {
+            dir('app') {
+              sh "dotnet restore app.csproj --configfile nuget.config --force --verbosity d"
+            }
+          }
+          stage('publish') {
+            dir('app') {
+              sh "dotnet publish app.csproj --no-restore -c Release"
+            }
+          }
+        } 
