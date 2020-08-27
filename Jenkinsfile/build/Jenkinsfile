@@ -38,7 +38,7 @@ pipeline {
     stage('Checkout Source') {
       steps {
 		script{
-		  sh "git clone https://github.com/chatapazar/dotnetcicd.git ."
+		  sh "git clone https://github.com/chatapazar/dotnetcicd ."
         }
         
 		dir('app') {
@@ -60,6 +60,9 @@ pipeline {
 	  steps {
 	    dir('app') {
 		  script{
+		    sh "whoami"
+			sh "node --version"
+			sh "npm --version"
 			sh "dotnet --version"
 	      }
 	    }
