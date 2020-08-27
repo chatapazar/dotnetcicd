@@ -1,0 +1,42 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    build: backend-build-pipeline
+  name: backend-build-pipeline
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: {}
+  output: {}
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    contextDir: Jenkinsfile/build
+    git:
+      ref: master
+      uri: https://github.com/chatapazar/backend_quarkus.git
+    # sourceSecret:
+    #   name: gogs-secret
+    type: Git
+  strategy:
+    jenkinsPipelineStrategy:
+      jenkinsfilePath: Jenkinsfile
+      env:
+        - name: DEV_PROJECT
+          value: dev
+        - name: CICD_PROJECT
+          value: ci-cd
+        - name: BACKEND_URL
+          value: https://httpbin.org/status/200
+        - name: NEXUS_SVC
+          value: http://nexus:8081
+        - name: SONARQUBE_SVC
+          value: http://sonarqube:9000
+        - name: NEXUS_SECRET
+          value: nexus-credential
+    type: JenkinsPipeline
+  successfulBuildsHistoryLimit: 5
+  triggers: []
+status:
+  lastVersion: 1
