@@ -36,7 +36,7 @@ node('dotnet-31') {
   stage('Create Build Config') {
     if(openshift.withCluster() {
           openshift.withProject(env.CICD_PROJECT) {
-            return !openshift.selector("bc", "${imageName}").exists()
+            return !openshift.selector("bc", "dotnet31-with-tools").exists()
           }
         }){
 	  echo "Create build config ${imageName}:latest"
