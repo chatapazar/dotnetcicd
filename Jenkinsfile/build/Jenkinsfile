@@ -3,6 +3,7 @@ pipeline {
   agent {
     kubernetes {
       label "dotnet31-with-tools"
+      instanceCap "100"
       cloud "openshift"
       containerTemplate {
         name "jnlp"
