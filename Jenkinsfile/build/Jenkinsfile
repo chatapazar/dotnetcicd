@@ -1,48 +1,23 @@
-def JENKINS_SLAVE_IMAGE = "dotnet-31-jenkins-agent-rhel7"
-pipeline {
-  agent {
-    kubernetes {
-      label "dotnet-31-jenkins-agent-rhel7"
-      cloud "openshift"
-	  serviceAccount "jenkins"
-	  instanceCap "100"
-      containerTemplate {
-        name "jnlp"
-        image "registry.redhat.io/dotnet/dotnet-31-jenkins-agent-rhel7:latest"
-		workingDir "/tmp"
-		alwaysPullImage "true"
-        resourceRequestMemory "600Mi"
-        resourceLimitMemory "2Gi"
-        resourceRequestCpu "1"
-        resourceLimitCpu "2"
-		ttyEnabled "false"
-		privileged "false"
-      }
-    }
+node('dotnet-31') {
+
+  stage('Clone') {
+    checkout scm
   }
-  options {
-    // set a timeout of 30 minutes for this pipeline
-    timeout(time: 30, unit: 'MINUTES')
+
+  stage('Test') {
+	dir('app') {
+	  script {
+		def props = readProperties file:'build.properties'
+		version = props['version']
+		echo "version: ${version}"
+	  }
+	}
   }
-  environment {
-    version = ""
-    imageName = "backend"
-    devTag = "0.0-0"
-    nexusUser = ""
-    nexusPassword =""
-   
+
+  stage('Run') {
+    sh "dotnet --version"
   }
+
+
   
-  stages {
-    stage('test') {
-      steps {
-		dir('app') {
-          script {
-            sh 'oc version'
-			sh 'dotnet'
-          }
-        }
-      }
-    }
-  }
 }
