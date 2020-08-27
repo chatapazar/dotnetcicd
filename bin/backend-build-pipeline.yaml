@@ -15,7 +15,7 @@ spec:
     contextDir: Jenkinsfile/build
     git:
       ref: master
-      uri: https://github.com/chatapazar/backend_quarkus.git
+      uri: https://github.com/chatapazar/dotnetcicd.git
     # sourceSecret:
     #   name: gogs-secret
     type: Git
@@ -29,12 +29,6 @@ spec:
           value: ci-cd
         - name: BACKEND_URL
           value: https://httpbin.org/status/200
-        - name: NEXUS_SVC
-          value: http://nexus:8081
-        - name: SONARQUBE_SVC
-          value: http://sonarqube:9000
-        - name: NEXUS_SECRET
-          value: nexus-credential
     type: JenkinsPipeline
   successfulBuildsHistoryLimit: 5
   triggers: []
