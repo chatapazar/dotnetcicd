@@ -1,4 +1,5 @@
 import java.text.SimpleDateFormat
+def JENKINS_SLAVE_IMAGE = "dotnet-31-jenkins-agent-rhel7"
 def selectTag
 def releaseTag
 def tag
@@ -13,7 +14,20 @@ node {
   
 }
 pipeline {
-  agent none
+  agent {
+    kubernetes {
+      label "dotnet31-with-tools"
+      cloud "openshift"
+      containerTemplate {
+        name "jnlp"
+        image "image-registry.openshift-image-registry.svc:5000/ci-cd/${JENKINS_SLAVE_IMAGE}:latest"
+        resourceRequestMemory "600Mi"
+        resourceLimitMemory "1Gi"
+        resourceRequestCpu "0.5"
+        resourceLimitCpu "1"
+      }
+    }
+  }
   options {
     timeout(time: 30, unit: 'MINUTES')
   }
