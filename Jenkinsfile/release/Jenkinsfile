@@ -21,6 +21,7 @@ node('dotnet-31') {
       def date = new Date()
       def releaseDate = (dateFormat.format(date))
       tag = releaseDate + "-" + env.BUILD_NUMBER
+	  echo "tag: ${tag}"
 	}
   }
  
