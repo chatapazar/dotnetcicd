@@ -21,6 +21,11 @@ pipeline {
     imageName="backend"
   }
   stages {  
+    
+	stage('Checkout Source) {
+	  checkout scm
+	}
+	
     stage('Choose UAT Version') {
       steps {
         script {
