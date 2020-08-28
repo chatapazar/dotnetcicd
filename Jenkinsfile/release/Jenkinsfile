@@ -22,7 +22,7 @@ pipeline {
   }
   stages {  
     
-	stage('Checkout Source) {
+	stage('Checkout Source') {
 	  checkout scm
 	}
 	
