@@ -25,7 +25,9 @@ pipeline {
     
 	stage('Checkout Source') {
 	  steps {
-		sh "git clone https://github.com/chatapazar/dotnetcicd.git ."
+		git(
+		  url: "https://github.com/chatapazar/dotnetcicd.git"
+        )
 	  }
 	}
 	
@@ -71,81 +73,6 @@ pipeline {
       }
     }
 	
-	stage('Release Image to Repository') {
-      steps {
-        script {
-          openshift.withCluster() {
-            openshift.withProject("${CICD_PROJECT}") {
-              println "Releasing image  ${imageName}:${selectTag} to Repository"
-              openshift.tag("${imageName}:${selectTag}", "${imageName}:${releaseTag}")
-            }
-          }
-        }
-      }
-    }
 	
-    stage('Tear-Down Stage') {
-      steps {
-        script {
-          openshift.withCluster() {
-            openshift.withProject("${UAT_PROJECT}") {
-              println "Tear-Down project ${UAT_PROJECT}"
-              openshift.raw("delete all -l app=${imageName}")
-            }
-          }
-        }
-      }
-    }
-
-    stage('Create Service') {
-      steps {
-        script {
-          openshift.withCluster() {
-            openshift.withProject("${UAT_PROJECT}") {
-              def template = './bin/backend-svc-stage.yaml'
-              openshift.apply(
-                openshift.process("-f", template)
-              )
-            }
-          }
-        }
-      }
-    }
-    
-    stage('Create Route') {
-      steps {
-        script {
-          openshift.withCluster() {
-            openshift.withProject("${UAT_PROJECT}") {
-              def template = './bin/backend-route-stage.yaml'
-              openshift.apply(
-                openshift.process("-f", template)
-              )
-            }
-          }
-        }
-      }
-    }
-    
-    stage('Create Deployment Config') {
-      steps {
-        println "Deploy to: ${UAT_PROJECT}"
-        println "IMAGE_TAG = ${releaseTag}"
-        script {
-          openshift.withCluster() {
-            openshift.withProject("${UAT_PROJECT}") {
-              def template = './bin/backend-dc-stage.yaml'
-              openshift.apply(
-                openshift.process(
-                  "-f", template,
-                  "-p", "IMAGE_TAG=${releaseTag}",
-                  "-p", "APP_VERSION=${version}"
-                )
-              )
-            }
-          }
-        }
-      }
-    }	
   }
 }
