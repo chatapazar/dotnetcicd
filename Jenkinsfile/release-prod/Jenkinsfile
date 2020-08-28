@@ -124,13 +124,14 @@ node('dotnet-31') {
 				return !openshift.selector("svc", "${imageName}-green").exists()
 			}
 		}) {
-		script {
-			openshift.withCluster() {
-				openshift.withProject("${PROD_PROJECT}") {
-					def template = './bin/backend-svc-green.yaml'
-					openshift.apply(
-						openshift.process("-f", template)
-					)
+			script {
+				openshift.withCluster() {
+					openshift.withProject("${PROD_PROJECT}") {
+						def template = './bin/backend-svc-green.yaml'
+						openshift.apply(
+							openshift.process("-f", template)
+						)
+					}
 				}
 			}
 		}
