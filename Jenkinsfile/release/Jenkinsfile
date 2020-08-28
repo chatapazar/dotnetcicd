@@ -1,44 +1,27 @@
 import java.text.SimpleDateFormat
-def JENKINS_SLAVE_IMAGE = "dotnet-31-jenkins-agent-rhel7"
-def selectTag
-def releaseTag
-def tag
-def UAT_PROJECT = "uat"
-def CICD_PROJECT = "ci-cd"
+version = ""
+imageName = "backend"
+devTag = "0.0-0"
+CICD_PROJECT = "ci-cd"
+DEV_PROJECT = "dev"
+selectTag = ""
+releaseTag = ""
+tag = ""
+UAT_PROJECT = "uat"
 
-node {
-  def dateFormat = new SimpleDateFormat("yyyyMMdd")
-  def date = new Date()
-  def releaseDate = (dateFormat.format(date))
-  tag = releaseDate + "-" + env.BUILD_NUMBER
+node('dotnet-31') {
+
+  stage('Checkout Source') {
+	checkout scm
+  }
   
-}
-pipeline {
-  agent none
-  options {
-    timeout(time: 30, unit: 'MINUTES')
-  }
-  environment {
-    imageName="backend"
-  }
-  stages {  
-    
-	stage('Checkout Source') {
-	  steps {
-		script {
-		  def  FILES_LIST = sh (script: "ls   '${env.WORKSPACE}'", returnStdout: true).trim()
-		  //DEBUG
-          echo "FILES_LIST : ${FILES_LIST}"
-          //PARSING
-          for(String ele : FILES_LIST.split("\\r?\\n")){ 
-            println ">>>${ele}<<<"     
-          }
-		}
-	  }
+  stage('Prepare Variable') {
+	script {
+	  def dateFormat = new SimpleDateFormat("yyyyMMdd")
+      def date = new Date()
+      def releaseDate = (dateFormat.format(date))
+      tag = releaseDate + "-" + env.BUILD_NUMBER
 	}
-	
-
-	
-	
   }
+ 
 }
