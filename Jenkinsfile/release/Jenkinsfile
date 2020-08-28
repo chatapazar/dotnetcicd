@@ -121,7 +121,7 @@ pipeline {
     
     stage('Create Deployment Config') {
       steps {
-        println "Deploy to: "${UAT_PROJECT}""
+        println "Deploy to: ${UAT_PROJECT}"
         println "IMAGE_TAG = ${releaseTag}"
         script {
           openshift.withCluster() {
