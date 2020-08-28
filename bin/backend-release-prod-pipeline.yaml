@@ -1,0 +1,29 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    build: backend-release-prod-pipeline
+  name: backend-release-prod-pipeline
+spec:
+  nodeSelector: {}
+  output: {}
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    contextDir: Jenkinsfile/release-prod
+    git:
+      ref: master
+      uri: https://github.com/chatapazar/backend_quarkus.git
+    type: Git
+  strategy:
+    jenkinsPipelineStrategy:
+      env:
+      - name: PROD_PROJECT
+        value: prod
+      - name: CICD_PROJECT
+        value: ci-cd
+      - name: BACKEND_URL
+        value: https://httpbin.org/status/200
+      jenkinsfilePath: Jenkinsfile
+    type: JenkinsPipeline
