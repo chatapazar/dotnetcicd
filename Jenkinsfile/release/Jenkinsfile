@@ -14,20 +14,7 @@ node {
   
 }
 pipeline {
-  agent {
-    kubernetes {
-      label "dotnet31-with-tools"
-      cloud "openshift"
-      containerTemplate {
-        name "jnlp"
-        image "image-registry.openshift-image-registry.svc:5000/ci-cd/${JENKINS_SLAVE_IMAGE}:latest"
-        resourceRequestMemory "600Mi"
-        resourceLimitMemory "1Gi"
-        resourceRequestCpu "0.5"
-        resourceLimitCpu "1"
-      }
-    }
-  }
+  agent none
   options {
     timeout(time: 30, unit: 'MINUTES')
   }
@@ -38,7 +25,7 @@ pipeline {
     
 	stage('Checkout Source') {
 	  steps {
-		checkout scm
+		sh "git clone https://github.com/chatapazar/dotnetcicd.git ."
 	  }
 	}
 	
