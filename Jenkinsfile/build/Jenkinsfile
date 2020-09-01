@@ -25,17 +25,104 @@ node('dotnet-31') {
 	}
   }
   
+  stage('Restore') {
+    dir('app') {
+      sh "dotnet restore app.csproj --configfile nuget.config --force --verbosity d"
+    }
+  }
+  
+  stage('Publish') {
+	dir('app') {
+	  sh "dotnet publish app.csproj --no-restore -c Release"
+	}
+  }
   stage('Unit Test'){
 	echo 'Todo: Unit Test'
   }
   
   stage('Code Analysis'){
-	  	dir('app') {
-	      echo 'Todo: Code Analysis'
-          sh "dotnet tool install --global dotnet-sonarscanner"
-	   } 
-     
+	echo 'Todo: Code Analysis' 
+  }
+  
+  stage('Create Build Config') {
+    script{
+	  if(openshift.withCluster() {
+        openshift.withProject("${CICD_PROJECT}") {
+          return !openshift.selector("bc", "${imageName}").exists()
+        }
+      }){
+        echo "Create build config ${imageName}:latest"
+	    dir('app') {
+          sh "oc -n ${CICD_PROJECT} new-build --name=${imageName} dotnet:3.1 --binary=true || true"
+        }
+	  }	
+	}
+  }
+  
+  stage('Create Service') {
+    script{
+	  if(openshift.withCluster() {
+		openshift.withProject("${DEV_PROJECT}") {
+		  return !openshift.selector("svc", "${imageName}").exists()
+		}
+	  }){
+		openshift.withCluster() {
+		  openshift.withProject("${DEV_PROJECT}") {
+		    def template = './bin/backend-svc-dev.yaml'
+			openshift.apply(
+			  openshift.process("-f", template)
+			)
+		  }
+		}	
+	  }	
+	}
+  }
+  
+  stage('Create Route') {
+	script{
+	  if(openshift.withCluster() {
+        openshift.withProject("${DEV_PROJECT}") {
+          return !openshift.selector("route", "${imageName}").exists()
+        }
+      }){
+        openshift.withCluster() {
+          openshift.withProject("${DEV_PROJECT}") {
+            def template = './bin/backend-route-dev.yaml'
+            openshift.apply(
+              openshift.process("-f", template)
+            )
+          }
+        }	  
+	  }
+    }	
   }
 
+  stage('Build Container Image') {
+    script{
+	  echo "Build Container Image ${imageName}"
+	  dir('app') {
+        sh "oc -n ${CICD_PROJECT} start-build ${imageName} --from-dir=bin/Release/netcoreapp3.1/publish --follow"
+		sh "oc tag ${imageName}:latest ${imageName}:${devTag}"
+      }
+    }	
+  }
+ 
+  stage('Create Deployment Config') {
+    script{
+	  echo "Create deployment config: ${DEV_PROJECT}"
+      openshift.withCluster() {
+        openshift.withProject("${DEV_PROJECT}") {
+          def template = './bin/backend-dc-dev.yaml'
+          openshift.apply(
+            openshift.process(
+              "-f", template,
+              "-p", "IMAGE_TAG=${devTag}",
+              "-p", "APP_VERSION=${version}"
+            )
+          )
+        }
+      }
+    }	
+  }
  
 }
