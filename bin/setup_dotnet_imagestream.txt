@@ -1,3 +1,5 @@
 oc create -f https://raw.githubusercontent.com/redhat-developer/s2i-dotnetcore/master/dotnet_imagestreams.json
 
 ./install-imagestreams.sh --os rhel7 [--namespace <namespace>]  [--user <subscription_user> --password <subscription_password>]
+
+oc describe is dotnet [-n <namespace>]
