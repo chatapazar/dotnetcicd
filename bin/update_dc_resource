@@ -1,0 +1,15 @@
+    spec:
+      containers:
+        - name: blaapp1
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/demo-dev31/blaapp1@sha256:eb3c1852689500be783bf6796240460dc209ad128b276197ced401e8945c801d
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 5m 
+              memory: 100Mi 
+            limits:
+              cpu: 10m 
+              memory: 200Mi
