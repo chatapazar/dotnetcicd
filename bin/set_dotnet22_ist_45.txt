@@ -1,0 +1,2 @@
+oc project ci-cd
+oc import-image dotnet/dotnet-22-rhel7 --from=registry.redhat.io/dotnet/dotnet-22-rhel7 --confirm
