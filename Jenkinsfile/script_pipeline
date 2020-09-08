@@ -1,2 +1,5 @@
 https://github.com/chatapazar/dotnetcicd.git
 
+Jenkinsfile/build/Jenkinsfile
+Jenkinsfile/release-prod/Jenkinsfile
+Jenkinsfile/release/Jenkinsfile
