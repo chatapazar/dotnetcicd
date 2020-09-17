@@ -6,12 +6,12 @@ apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: cpu-autoscale 
-  namespace: demo-dev31
+  namespace: dotnet31
 spec:
   scaleTargetRef:
     apiVersion: v1 
     kind: DeploymentConfig 
-    name: dotnetapp 
+    name: blaapp1 
   minReplicas: 1 
   maxReplicas: 10 
   metrics: 
